@@ -74,3 +74,7 @@ Country:
 ----------------------------------------------------------------
 
 Now if you head over to my profile on Scratch (scratch.mit.edu/users/Dhananjaya), you will see the exact same thing as what is presented here.
+
+Contact:
+
+To contact me, you can comment on my Scratch profile, if I do not respond within the next three days, you may comment again, but please do not spam.
