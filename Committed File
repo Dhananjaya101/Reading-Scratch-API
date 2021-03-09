@@ -1,0 +1,103 @@
+import requests
+import itertools
+import threading
+import time
+import sys
+import os
+
+os.system('cls')
+done = False
+
+
+def Animate():
+    for c in itertools.cycle(['|', '/', '-', '\\']):
+        if done:
+            break
+        sys.stdout.write('\rloading ' + c)
+        sys.stdout.flush()
+        time.sleep(0.1)
+
+
+def Decode(encoded):
+    decoded = encoded
+    decoded = list(decoded.items())
+    user_id = decoded[0][1]
+    username = decoded[1][1]
+    scratch_team = decoded[2][1]
+
+    date_joined = encoded.get('history').get('joined')
+    date_joined = date_joined[0:date_joined.find('T')]
+
+    time_joined = encoded.get('history').get('joined')
+    time_joined = time_joined[time_joined.find('T') + 1:len(time_joined) - 5]
+
+    about_me = encoded.get('profile').get('bio')
+    working_on = encoded.get('profile').get('status')
+    country = encoded.get('profile').get('country')
+    print('User ID:')
+    print('     ' + str(user_id))
+    print()
+
+    print('Username:')
+    print('     ' + str(username))
+    print()
+
+    print('Are they a Scratch Team Member?')
+    print('     ' + str(scratch_team))
+    print()
+
+    print('Date Joined:')
+    print('     ' + str(date_joined))
+    print()
+
+    print('Time Joined:')
+    print('     ' + str(time_joined))
+    print()
+
+    print('About Me:')
+    print('     ' + str(about_me))
+
+    print('What I am Working On:')
+    print('     ' + str(working_on))
+    print()
+
+    print('Country:')
+    print('     ' + str(country))
+    print()
+
+
+threading = threading.Thread(target=Animate)
+
+username = input('Enter a Scratch username:  ')
+
+response = requests.get('https://api.scratch.mit.edu/users/' + str(username))
+
+status_codes = {200: 'Connected Successfully :)',
+                301: 'Connected Successfully :)',
+                400: 'Bad Request, Could not Connect :(',
+                401: 'Not Authenticated',
+                403: 'Access Denided',
+                404: 'Domain Not Found',
+                503: 'Could not Handle Request'
+                }
+
+opposite_status_codes = {'Connected Successfully :)': 200,
+                         'Connected Successfully :)': 301,
+                         'Bad Request, Could not Connect :(': 400,
+                         'Not Authenticated': 401,
+                         'Access Denided': 403,
+                         'Domain Not Found': 404,
+                         'Could not Handle Request': 503
+                         }
+
+text = 'Code ' + str(opposite_status_codes.get(status_codes.get(response.status_code))) + ':  ' + str(status_codes.get(response.status_code))
+print(text)
+print()
+if not text == 'Code 404:  Domain Not Found':
+    threading.start()
+    time.sleep(3)
+    done = True
+    time.sleep(2)
+    print('\033[A                             \033[A')
+    print()
+    Decode(response.json())
